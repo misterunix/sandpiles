@@ -36,44 +36,42 @@ func topple() bool {
 			index := y*width + x
 
 			if grid1[index] > 3 {
-				//fmt.Println(x, y, index, grid1[index])
-				grid1[index] -= 4
-				//grid2[index] = grid1[index] - 4
+
+				grid2[index] += grid1[index] - 4
 				didround = true
 				var tx, ty int
 
 				tx = x - 1
 				if tx >= 0 {
-					grid2[y*width+tx] = 1 // grid1[y*width+tx] + grid2[y*width+tx] + 1
+					grid2[y*width+tx] += grid1[y*width+tx] + 1 // grid1[y*width+tx] + grid2[y*width+tx] + 1
 				}
 				tx = x + 1
 				if tx < width {
-					grid2[y*width+tx] = 1 //grid1[y*width+tx] + grid2[y*width+tx] + 1
+					grid2[y*width+tx] += grid1[y*width+tx] + 1 //grid1[y*width+tx] + grid2[y*width+tx] + 1
 				}
 
 				ty = y - 1
 				if ty >= 0 {
-					grid2[ty*width+x] = 1 //grid1[ty*width+x] + grid2[ty*width+x] + 1
+					grid2[ty*width+x] += grid1[ty*width+x] + 1 //grid1[ty*width+x] + grid2[ty*width+x] + 1
 				}
 				ty = y + 1
 				if ty < height {
-					grid2[ty*width+x] = 1 // grid1[ty*width+x] + grid2[ty*width+x] + 1
+					grid2[ty*width+x] += grid1[ty*width+x] + 1 // grid1[ty*width+x] + grid2[ty*width+x] + 1
 				}
 
 			}
 
 		}
 	}
-	/*
-		if didround {
-			for i := 0; i < size; i++ {
-				grid1[i] = grid2[i]
-				grid2[i] = 0
-			}
-			fmt.Println("In topple")
-			printgrid()
+
+	if didround {
+		for i := 0; i < size; i++ {
+			grid1[i] = grid2[i]
+			grid2[i] = 0
 		}
-	*/
+		//fmt.Println("In topple")
+		//printgrid()
+	}
 
 	return didround
 }
@@ -114,7 +112,7 @@ func main() {
 	c[2] = ibuf0.ColorAllocateAlpha(0xED, 0xD3, 0x82, 0)
 	c[3] = ibuf0.ColorAllocateAlpha(0xFC, 0x9E, 0x4F, 0)
 	c[4] = ibuf0.ColorAllocateAlpha(0xFF, 0x52, 0x1B, 0)
-
+	ccc := ibuf0.ColorAllocateAlpha(0xFF, 0xff, 0xff, 0)
 	//for sn := 1000; sn < 100000; sn = sn + 1000 {
 	for i := 0; i < size; i++ {
 		grid1[i] = 0
@@ -130,20 +128,24 @@ func main() {
 	//		}
 	//	}
 
-	grid1[center*width+center] = rnd.Intn(76531) + 5000
-	grid2[center*width+center] = 0
+	grid1[center*width+center] = 25 + rnd.Intn(1)
+	//grid2[center*width+center] = 0
 
 	//fmt.Println("Start grid")
 	//printgrid()
-
+	var frame int
 	for {
-		gridadd()
+		//gridadd()
 		j := topple()
 		//fmt.Println("in loop")
 		//printgrid()
 		if !j {
 			break
 		}
+		if frame%1000 == 0 {
+			fmt.Println(frame)
+		}
+		frame++
 	}
 
 	//fmt.Println("Final")
@@ -152,10 +154,14 @@ func main() {
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
 			index := y*width + x
-			ibuf0.SetPixel(y, x, c[grid1[index]])
+			if grid1[index] > 4 {
+				ibuf0.SetPixel(y, x, ccc)
+			} else {
+				ibuf0.SetPixel(y, x, c[grid1[index]])
+			}
 		}
 	}
-	fn := fmt.Sprintf("images/test.png")
+	fn := "images/final.png"
 	fmt.Println(fn)
 	ibuf0.Png(fn)
 	//}

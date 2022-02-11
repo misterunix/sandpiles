@@ -6,7 +6,9 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
+	"log"
 	"os"
+	"time"
 )
 
 var maxwidth int
@@ -18,8 +20,10 @@ var centerheight int
 var grid1 []int
 
 func topple() bool {
-
+	var bail bool
 	var grid2 = make([]int, maxsize)
+
+	bail = true
 
 	for y := 0; y < maxheight; y++ {
 		for x := 0; x < maxwidth; x++ {
@@ -37,35 +41,53 @@ func topple() bool {
 			num := grid1[index]
 			if num >= 4 {
 				grid2[index] += (num - 4)
+				if grid2[index] >= 4 {
+					bail = false
+				}
 
 				if x-1 >= 0 {
 					tx := x - 1
 					grid2[y*maxwidth+tx]++
+					if grid2[y*maxwidth+tx] >= 4 {
+						bail = false
+					}
 				}
 				if y-1 >= 0 {
 					ty := y - 1
 					grid2[ty*maxwidth+x]++
+					if grid2[ty*maxwidth+x] >= 4 {
+						bail = false
+					}
 				}
 
 				if x+1 <= maxwidth-1 {
 					tx := x + 1
 					grid2[y*maxwidth+tx]++
+					if grid2[y*maxwidth+tx] >= 4 {
+						bail = false
+					}
 				}
 				if y+1 <= maxheight-1 {
 					ty := y + 1
 					grid2[ty*maxwidth+x]++
+					if grid2[ty*maxwidth+x] >= 4 {
+						bail = false
+					}
 				}
 			}
 		}
 	}
-	bail := true
-	for i := 0; i < maxsize; i++ {
-		grid1[i] = grid2[i]
-		if grid1[i] >= 4 {
-			bail = false
+
+	grid1 = grid2
+	/*
+		for i := 0; i < maxsize; i++ {
+			grid1[i] = grid2[i]
+			if grid1[i] >= 4 {
+				bail = false
+			}
+			//	grid2[i] = 0
 		}
-		//	grid2[i] = 0
-	}
+	*/
 	return bail
 }
 
@@ -84,6 +106,7 @@ func printboard() {
 func main() {
 
 	fmt.Println("Program started.")
+	start := time.Now()
 	//seed := time.Now().UnixNano()
 	//randomSource := rand.NewSource(seed)
 	//rnd := rand.New(randomSource)
@@ -98,7 +121,7 @@ func main() {
 	//	grid2 = make([]int, maxsize)
 
 	index := centerheight*maxwidth + centerwidth
-	grid1[index] = 60000
+	grid1[index] = 6000
 	//printboard()
 
 	frame := 0
@@ -204,7 +227,7 @@ func main() {
 	fn := fmt.Sprintf("images/test-%d.png", pid)
 	f, err := os.Create(fn)
 	if err != nil {
-		// Handle error
+		log.Fatalln(err)
 	}
 	defer f.Close()
 
@@ -212,6 +235,9 @@ func main() {
 	// then save to file
 	err = png.Encode(f, img)
 	if err != nil {
-		// Handle error
+		log.Fatalln(err)
 	}
+
+	fmt.Printf("Time %s\n\n", time.Since(start))
+
 }

@@ -2,6 +2,11 @@ package main
 
 import (
 	"fmt"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/png"
+	"os"
 )
 
 var maxwidth int
@@ -83,8 +88,8 @@ func main() {
 	//randomSource := rand.NewSource(seed)
 	//rnd := rand.New(randomSource)
 
-	maxwidth = 17
-	maxheight = 17
+	maxwidth = 1920
+	maxheight = 1920
 	centerwidth = maxwidth / 2
 	centerheight = maxheight / 2
 	maxsize = maxheight * maxwidth
@@ -93,15 +98,120 @@ func main() {
 	//	grid2 = make([]int, maxsize)
 
 	index := centerheight*maxwidth + centerwidth
-	grid1[index] = 333
-	printboard()
+	grid1[index] = 60000
+	//printboard()
 
+	frame := 0
+	ty := 0
 	for {
 		t := topple()
-		printboard()
+		//printboard()
 		if t {
 			break
 		}
+		frame++
+		if frame%100 == 0 {
+			var char string
+			switch ty {
+			case 0:
+				char = "|"
+			case 1:
+				char = "/"
+			case 2:
+				char = "-"
+			case 3:
+				char = "\\"
+			case 4:
+				char = "|"
+			case 5:
+				char = "/"
+			case 6:
+				char = "-"
+			case 7:
+				char = "\\"
+			}
+
+			fmt.Printf("%s\r", char)
+			ty++
+			if ty == 7 {
+				ty = 0
+			}
+
+		}
 	}
 
+	/*
+		minx := maxwidth
+		maxx := 0
+		miny := maxheight
+		maxy := 0
+		for y := 0; y < maxheight; y++ {
+			for x := 0; x < maxwidth; x++ {
+				if grid1[y+maxwidth+x] != 0 {
+					if x > maxx {
+						maxx = x
+					}
+					if x < minx {
+						minx = x
+					}
+					if y > maxy {
+						maxy = y
+					}
+					if y < miny {
+						miny = y
+					}
+				}
+			}
+		}
+
+		fmt.Printf("minx %d miny %d\nmaxx %d maxy %d\n", minx, miny, maxx, maxy)
+	*/
+
+	/*
+	   F2F3AE
+	   EDD382
+	   FC9E4F
+	   FF521B
+	   020122
+	*/
+	img := image.NewRGBA(image.Rect(0, 0, maxwidth, maxheight))
+	bgcolor := color.RGBA{R: 0, G: 0, B: 0, A: 0xFF}
+	draw.Draw(img, img.Bounds(), &image.Uniform{bgcolor}, image.Point{}, draw.Src)
+	for y := 0; y < maxheight; y++ {
+		for x := 0; x < maxwidth; x++ {
+			num := grid1[y*maxwidth+x]
+			switch num {
+			case 0:
+				c := color.RGBA{R: 0x3d, G: 0x31, B: 0x5b, A: 0xff}
+				img.Set(x, y, c)
+			case 1:
+				c := color.RGBA{R: 0x44, G: 0x4b, B: 0x6e, A: 0xff}
+				img.Set(x, y, c)
+			case 2:
+				c := color.RGBA{R: 0x70, G: 0x8b, B: 0x75, A: 0xff}
+				img.Set(x, y, c)
+			case 3:
+				c := color.RGBA{R: 0x9a, G: 0xb8, B: 0x7a, A: 0xff}
+				img.Set(x, y, c)
+			}
+		}
+	}
+
+	fmt.Println()
+	fmt.Println()
+
+	pid := os.Getpid()
+	fn := fmt.Sprintf("images/test-%d.png", pid)
+	f, err := os.Create(fn)
+	if err != nil {
+		// Handle error
+	}
+	defer f.Close()
+
+	// Encode to `PNG` with `DefaultCompression` level
+	// then save to file
+	err = png.Encode(f, img)
+	if err != nil {
+		// Handle error
+	}
 }

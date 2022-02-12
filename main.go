@@ -11,6 +11,13 @@ import (
 	"time"
 )
 
+type Rec struct {
+	MinX int
+	MinY int
+	MaxX int
+	MaxY int
+}
+
 var maxwidth int
 var maxheight int
 var maxsize int
@@ -19,14 +26,16 @@ var centerheight int
 
 var grid1 []int
 
+var wrec Rec
+
 func topple() bool {
 	var bail bool
 	var grid2 = make([]int, maxsize)
 
 	bail = true
 
-	for y := 0; y < maxheight; y++ {
-		for x := 0; x < maxwidth; x++ {
+	for y := wrec.MinY; y <= wrec.MaxY; y++ {
+		for x := wrec.MinX; x <= wrec.MaxX; x++ {
 			index := y*maxwidth + x
 			if grid1[index] < 4 {
 				grid2[index] = grid1[index]
@@ -34,8 +43,23 @@ func topple() bool {
 		}
 	}
 
-	for y := 0; y < maxheight; y++ {
-		for x := 0; x < maxwidth; x++ {
+	w := wrec
+	if wrec.MinX < 0 {
+		wrec.MinX = 0
+	}
+	if wrec.MinY < 0 {
+		wrec.MinY = 0
+	}
+	if wrec.MaxX > maxwidth {
+		wrec.MaxX = maxwidth
+	}
+	if wrec.MaxY > maxheight {
+		wrec.MaxY = maxheight
+	}
+	//for y := 0; y < maxheight; y++ {
+	//	for x := 0; x < maxwidth; x++ {
+	for y := w.MinY; y <= w.MaxY; y++ {
+		for x := w.MinX; x <= w.MaxX; x++ {
 
 			index := y*maxwidth + x
 			num := grid1[index]
@@ -48,6 +72,9 @@ func topple() bool {
 				if x-1 >= 0 {
 					tx := x - 1
 					grid2[y*maxwidth+tx]++
+					if tx < wrec.MinX {
+						wrec.MinX = tx
+					}
 					if grid2[y*maxwidth+tx] >= 4 {
 						bail = false
 					}
@@ -55,6 +82,9 @@ func topple() bool {
 				if y-1 >= 0 {
 					ty := y - 1
 					grid2[ty*maxwidth+x]++
+					if ty < wrec.MinY {
+						wrec.MinY = ty
+					}
 					if grid2[ty*maxwidth+x] >= 4 {
 						bail = false
 					}
@@ -63,6 +93,9 @@ func topple() bool {
 				if x+1 <= maxwidth-1 {
 					tx := x + 1
 					grid2[y*maxwidth+tx]++
+					if tx > wrec.MaxX {
+						wrec.MaxX = tx
+					}
 					if grid2[y*maxwidth+tx] >= 4 {
 						bail = false
 					}
@@ -70,6 +103,9 @@ func topple() bool {
 				if y+1 <= maxheight-1 {
 					ty := y + 1
 					grid2[ty*maxwidth+x]++
+					if ty > wrec.MaxY {
+						wrec.MaxY = ty
+					}
 					if grid2[ty*maxwidth+x] >= 4 {
 						bail = false
 					}
@@ -117,12 +153,42 @@ func main() {
 	centerheight = maxheight / 2
 	maxsize = maxheight * maxwidth
 
+	wrec.MaxX = 0
+	wrec.MaxY = 0
+	wrec.MinX = maxwidth
+	wrec.MinY = maxheight
+
 	grid1 = make([]int, maxsize)
 	//	grid2 = make([]int, maxsize)
 
 	index := centerheight*maxwidth + centerwidth
-	grid1[index] = 600000
-	//printboard()
+	grid1[index] = 1000000
+
+	// Scan grid to find working rectangle
+	for y := 0; y < maxheight; y++ {
+		for x := 0; x < maxwidth; x++ {
+			index := y*maxwidth + x
+			if grid1[index] != 0 && x < wrec.MinX {
+				wrec.MinX = x
+			}
+			if grid1[index] != 0 && y < wrec.MinY {
+				wrec.MinY = y
+			}
+			if grid1[index] != 0 && x > wrec.MaxX {
+				wrec.MaxX = x
+			}
+			if grid1[index] != 0 && y > wrec.MaxY {
+				wrec.MaxY = y
+			}
+		}
+	}
+
+	wrec.MinX--
+	wrec.MinY--
+	wrec.MaxX++
+	wrec.MaxY++
+
+	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)
 
 	frame := 0
 	ty := 0
@@ -197,12 +263,42 @@ func main() {
 	   FF521B
 	   020122
 	*/
-	img := image.NewRGBA(image.Rect(0, 0, maxwidth, maxheight))
+
+	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)
+	fmt.Println("Frames:", frame)
+
+	// make bounding box a little larger
+	wrec.MinX -= 10
+	wrec.MinY -= 10
+	wrec.MaxX += 10
+	wrec.MaxY += 10
+
+	if wrec.MinX < 0 {
+		wrec.MinX = 0
+	}
+	if wrec.MinY < 0 {
+		wrec.MinY = 0
+	}
+	if wrec.MaxX > maxwidth {
+		wrec.MaxX = maxwidth
+	}
+	if wrec.MaxY > maxheight {
+		wrec.MaxY = maxheight
+	}
+
+	iwidth := wrec.MaxX - wrec.MinX
+	iheight := wrec.MaxY - wrec.MinY
+
+	img := image.NewRGBA(image.Rect(0, 0, iwidth, iheight))
 	bgcolor := color.RGBA{R: 0, G: 0, B: 0, A: 0xFF}
 	draw.Draw(img, img.Bounds(), &image.Uniform{bgcolor}, image.Point{}, draw.Src)
-	for y := 0; y < maxheight; y++ {
-		for x := 0; x < maxwidth; x++ {
-			num := grid1[y*maxwidth+x]
+
+	x := 0
+	y := 0
+	for wy := wrec.MinY; wy < wrec.MaxY; wy++ {
+		for wx := wrec.MinX; wx < wrec.MaxX; wx++ {
+
+			num := grid1[wy*maxwidth+wx]
 			switch num {
 			case 0:
 				c := color.RGBA{R: 0x3d, G: 0x31, B: 0x5b, A: 0xff}
@@ -217,7 +313,11 @@ func main() {
 				c := color.RGBA{R: 0x9a, G: 0xb8, B: 0x7a, A: 0xff}
 				img.Set(x, y, c)
 			}
+
+			x++
 		}
+		y++
+		x = 0
 	}
 
 	fmt.Println()

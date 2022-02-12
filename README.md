@@ -1,15 +1,37 @@
 # sandpiles
-Fractal Zero - https://www.youtube.com/watch?v=1MtEUErz7Gg
 
-Fracking yeh, fornula working now.
-
-Time to add graphics back.
+Inspired by
+[Fractal Zero](https://www.youtube.com/watch?v=1MtEUErz7Gg)
 
 
-Triple loops 6000 Time 1m22.959370164s
-Double loops 6000 Time 56.509960683s
+Now using a bounding box to speed up the topples. Looping through the entire image space is very slow.
 
-Single loop - failed - took 15 seconds but it had the wrong results
+Still using a double loop. First loop copies values from one grid to the temp grid. Second loop does the actual topple.
 
+Starting the run with the number of grains in the starting spot is faster than adding one grain at a time, then running topple. 
 
-Double loops 600000 Time 2h21m6.07087493s
+## Timing and tuning tests. No optimazations.
+
+- Triple loop
+  - 6000 grains
+    - Time 1m22.959370164s
+- Double loop 
+  - 6000 grains 
+    - Time 56.509960683s
+  - 600000 
+    -Time 2h21m6.07087493s
+- Single loop 
+  - failed 
+  - took 15 seconds but it had the wrong results
+
+## Rectangle bounding
+
+- Double loop
+  - 6000 grains
+    - Time 16.838954968s **WOW**
+  - 60000 grains
+    - Time 3m36.471748631s
+  - 600000 grains
+    - Time 52m54.697291662s
+  - 1000000 grains
+    - Time 1h40m8.293423533s

@@ -121,7 +121,7 @@ func main() {
 	//	grid2 = make([]int, maxsize)
 
 	index := centerheight*maxwidth + centerwidth
-	grid1[index] = 6000
+	grid1[index] = 600000
 	//printboard()
 
 	frame := 0

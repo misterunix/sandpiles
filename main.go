@@ -44,6 +44,18 @@ func topple() bool {
 	}
 
 	w := wrec
+	if wrec.MinX < 0 {
+		wrec.MinX = 0
+	}
+	if wrec.MinY < 0 {
+		wrec.MinY = 0
+	}
+	if wrec.MaxX > maxwidth {
+		wrec.MaxX = maxwidth
+	}
+	if wrec.MaxY > maxheight {
+		wrec.MaxY = maxheight
+	}
 	//for y := 0; y < maxheight; y++ {
 	//	for x := 0; x < maxwidth; x++ {
 	for y := w.MinY; y <= w.MaxY; y++ {
@@ -150,8 +162,7 @@ func main() {
 	//	grid2 = make([]int, maxsize)
 
 	index := centerheight*maxwidth + centerwidth
-	grid1[index] = 5000
-	//printboard()
+	grid1[index] = 1000000
 
 	// Scan grid to find working rectangle
 	for y := 0; y < maxheight; y++ {
@@ -256,15 +267,38 @@ func main() {
 	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)
 	fmt.Println("Frames:", frame)
 
-	//iwidth := wrec.MaxX - wrec.MinX
-	//iheight := wrec.MaxY - wrec.MinY
+	// make bounding box a little larger
+	wrec.MinX -= 10
+	wrec.MinY -= 10
+	wrec.MaxX += 10
+	wrec.MaxY += 10
 
-	img := image.NewRGBA(image.Rect(0, 0, maxwidth, maxheight))
+	if wrec.MinX < 0 {
+		wrec.MinX = 0
+	}
+	if wrec.MinY < 0 {
+		wrec.MinY = 0
+	}
+	if wrec.MaxX > maxwidth {
+		wrec.MaxX = maxwidth
+	}
+	if wrec.MaxY > maxheight {
+		wrec.MaxY = maxheight
+	}
+
+	iwidth := wrec.MaxX - wrec.MinX
+	iheight := wrec.MaxY - wrec.MinY
+
+	img := image.NewRGBA(image.Rect(0, 0, iwidth, iheight))
 	bgcolor := color.RGBA{R: 0, G: 0, B: 0, A: 0xFF}
 	draw.Draw(img, img.Bounds(), &image.Uniform{bgcolor}, image.Point{}, draw.Src)
-	for y := 0; y < maxheight; y++ {
-		for x := 0; x < maxwidth; x++ {
-			num := grid1[y*maxwidth+x]
+
+	x := 0
+	y := 0
+	for wy := wrec.MinY; wy < wrec.MaxY; wy++ {
+		for wx := wrec.MinX; wx < wrec.MaxX; wx++ {
+
+			num := grid1[wy*maxwidth+wx]
 			switch num {
 			case 0:
 				c := color.RGBA{R: 0x3d, G: 0x31, B: 0x5b, A: 0xff}
@@ -279,7 +313,11 @@ func main() {
 				c := color.RGBA{R: 0x9a, G: 0xb8, B: 0x7a, A: 0xff}
 				img.Set(x, y, c)
 			}
+
+			x++
 		}
+		y++
+		x = 0
 	}
 
 	fmt.Println()

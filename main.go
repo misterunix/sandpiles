@@ -150,7 +150,7 @@ func main() {
 	//	grid2 = make([]int, maxsize)
 
 	index := centerheight*maxwidth + centerwidth
-	grid1[index] = 600000
+	grid1[index] = 5000
 	//printboard()
 
 	// Scan grid to find working rectangle
@@ -252,6 +252,13 @@ func main() {
 	   FF521B
 	   020122
 	*/
+
+	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)
+	fmt.Println("Frames:", frame)
+
+	//iwidth := wrec.MaxX - wrec.MinX
+	//iheight := wrec.MaxY - wrec.MinY
+
 	img := image.NewRGBA(image.Rect(0, 0, maxwidth, maxheight))
 	bgcolor := color.RGBA{R: 0, G: 0, B: 0, A: 0xFF}
 	draw.Draw(img, img.Bounds(), &image.Uniform{bgcolor}, image.Point{}, draw.Src)

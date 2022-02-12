@@ -33,4 +33,5 @@ Starting the run with the number of grains in the starting spot is faster than a
     - Time 3m36.471748631s
   - 600000 grains
     - Time 52m54.697291662s
-    
+  - 1000000 grains
+    - Time 1h40m8.293423533s

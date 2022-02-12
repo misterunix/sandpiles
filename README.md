@@ -35,3 +35,26 @@ Starting the run with the number of grains in the starting spot is faster than a
     - Time 52m54.697291662s
   - 1000000 grains
     - Time 1h40m8.293423533s
+
+## Changing ints to fixed size.
+
+## Base line before changes. Loading cell with total grains.
+- 4095 1<<12 - 1
+  - Time 10.626969828s
+  - Frames: 2926
+  - w:68 h:68
+- 8191 1<<13 - 1
+  - Time Time 25.623525736s
+  - Frames: 6384
+  - w:86 h:86
+- 16383 1<<14 - 1
+  - Time 52.905092416s
+  - Frames: 14428
+  - w:114 h:114
+- 32767 1<<15 - 1
+  - Time 1m50.013343568s
+  - Frames: 29026
+  - w:154 h:154
+
+## Putting 1 grain at a time in a loop
+

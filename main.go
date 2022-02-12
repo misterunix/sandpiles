@@ -162,7 +162,8 @@ func main() {
 	//	grid2 = make([]int, maxsize)
 
 	index := centerheight*maxwidth + centerwidth
-	grid1[index] = 1000000
+	grains := 1<<15 - 1
+	grid1[index] = grains
 
 	// Scan grid to find working rectangle
 	for y := 0; y < maxheight; y++ {
@@ -266,6 +267,7 @@ func main() {
 
 	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)
 	fmt.Println("Frames:", frame)
+	fmt.Println("grains:", grains)
 
 	// make bounding box a little larger
 	wrec.MinX -= 10
@@ -292,6 +294,8 @@ func main() {
 	img := image.NewRGBA(image.Rect(0, 0, iwidth, iheight))
 	bgcolor := color.RGBA{R: 0, G: 0, B: 0, A: 0xFF}
 	draw.Draw(img, img.Bounds(), &image.Uniform{bgcolor}, image.Point{}, draw.Src)
+
+	fmt.Printf("w:%d h:%d\n", iwidth, iheight)
 
 	x := 0
 	y := 0
@@ -321,6 +325,7 @@ func main() {
 	}
 
 	fmt.Println()
+	fmt.Printf("Time %s\n\n", time.Since(start))
 	fmt.Println()
 
 	pid := os.Getpid()
@@ -337,7 +342,5 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	fmt.Printf("Time %s\n\n", time.Since(start))
 
 }

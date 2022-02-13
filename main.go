@@ -156,8 +156,8 @@ func main() {
 	//randomSource := rand.NewSource(seed)
 	//rnd := rand.New(randomSource)
 
-	maxwidth = 1920  // originally for image size, now just grid size.
-	maxheight = 1920 // originally for image size, now just grid size.
+	maxwidth = 2048  // originally for image size, now just grid size.
+	maxheight = 2048 // originally for image size, now just grid size.
 	maxsize = maxheight * maxwidth
 	grid1 = make([]uint8, maxsize) // allocate memory for main grid.
 
@@ -166,7 +166,7 @@ func main() {
 	centerheight = maxheight / 2
 
 	// shift : Easy place to set the number of bits to shift.
-	shift := 18
+	shift := 15
 
 	// grains : The number of grains that will be feed to the starting locations.
 	grains := 1 << shift
@@ -182,8 +182,10 @@ func main() {
 	cindex := centerheight*maxwidth + centerwidth
 
 	// prime the grid
-	grid1[cindex-100] = 128
-	grid1[cindex+100] = 128
+	//grid1[cindex-100] = 128
+	//grid1[cindex+100] = 128
+
+	grid1[cindex] = 128
 
 	// Scan grid to find working rectangle
 	for y := 0; y < maxheight; y++ {
@@ -262,8 +264,9 @@ func main() {
 		// topple exited out of the inner loop. Add 129 to the feed points on
 		// the grid. Allow the outer loop to check if enough grains have been
 		// set.
-		grid1[cindex-100] += 128
-		grid1[cindex+100] += 128
+		//grid1[cindex-100] += 128
+		//grid1[cindex+100] += 128
+		grid1[cindex] += 128
 	}
 
 	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)
@@ -313,16 +316,18 @@ func main() {
 			num := grid1[wy*maxwidth+wx]
 			switch num {
 			case 0:
-				c := color.RGBA{R: 0x47, G: 0x2e, B: 0x74, A: 0xff}
+				c := color.RGBA{R: 0x4, G: 0x3a, B: 0x6f, A: 0xff}
 				img.Set(x, y, c)
 			case 1:
-				c := color.RGBA{R: 0x31, G: 0x3a, B: 0x75, A: 0xff}
+				c := color.RGBA{R: 0xf, G: 0x72, B: 0x84, A: 0xff}
 				img.Set(x, y, c)
 			case 2:
-				c := color.RGBA{R: 0xaa, G: 0x8a, B: 0x39, A: 0xff}
+				c := color.RGBA{R: 0xaa, G: 0x88, B: 0x39, A: 0xff}
+				//c := color.RGBA{R: 0xaa, G: 0x8a, B: 0x39, A: 0xff}
 				img.Set(x, y, c)
 			case 3:
-				c := color.RGBA{R: 0xaa, G: 0x9c, B: 0x39, A: 0xff}
+				c := color.RGBA{R: 0x9c, G: 0x00, B: 0x3c, A: 0xff}
+				//c := color.RGBA{R: 0xaa, G: 0x9c, B: 0x39, A: 0xff}
 				img.Set(x, y, c)
 			case 4:
 				c := color.RGBA{R: 0x00, G: 0xff, B: 0x00, A: 0xff}

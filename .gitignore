@@ -16,3 +16,4 @@
 *.png 
 sandpiles
 l.txt
+!0*.png

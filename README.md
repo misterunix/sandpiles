@@ -129,3 +129,9 @@ Starting the run with the number of grains in the starting spot is faster than a
 
 ![+-100 1<<17](images/00000131072-252412.png)
 
+  - 262144 1<<18
+    - Time 1h44m23.312677082s
+    - Frames: 5562422
+    - w:620 h:454
+    
+![+-1-- 1<<18](images/00000262144-253488.png)

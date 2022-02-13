@@ -24,13 +24,13 @@ var maxsize int
 var centerwidth int
 var centerheight int
 
-var grid1 []int
+var grid1 []uint8
 
 var wrec Rec
 
 func topple() bool {
 	var bail bool
-	var grid2 = make([]int, maxsize)
+	var grid2 = make([]uint8, maxsize)
 
 	bail = true
 
@@ -152,18 +152,26 @@ func main() {
 	centerwidth = maxwidth / 2
 	centerheight = maxheight / 2
 	maxsize = maxheight * maxwidth
+	grid1 = make([]uint8, maxsize)
+
+	shift := 19
+
+	grains := 1 << shift
+
+	//	for outerloop := 1;outerloop<=grains;outerloop++ {
 
 	wrec.MaxX = 0
 	wrec.MaxY = 0
 	wrec.MinX = maxwidth
 	wrec.MinY = maxheight
 
-	grid1 = make([]int, maxsize)
-	//	grid2 = make([]int, maxsize)
+	cindex := centerheight*maxwidth + centerwidth
 
-	index := centerheight*maxwidth + centerwidth
-	grains := 1<<15 - 1
-	grid1[index] = grains
+	// prime the grid
+	grid1[cindex] = 128
+
+	//grains := 1<<15 - 1
+	//grid1[cindex] = grains
 
 	// Scan grid to find working rectangle
 	for y := 0; y < maxheight; y++ {
@@ -193,69 +201,49 @@ func main() {
 
 	frame := 0
 	ty := 0
-	for {
-		t := topple()
-		//printboard()
-		if t {
-			break
-		}
-		frame++
-		if frame%100 == 0 {
-			var char string
-			switch ty {
-			case 0:
-				char = "|"
-			case 1:
-				char = "/"
-			case 2:
-				char = "-"
-			case 3:
-				char = "\\"
-			case 4:
-				char = "|"
-			case 5:
-				char = "/"
-			case 6:
-				char = "-"
-			case 7:
-				char = "\\"
+
+	for outerloop := 0; outerloop < grains; outerloop += 128 {
+
+		for {
+			t := topple()
+			//printboard()
+			if t {
+				break
 			}
 
-			fmt.Printf("%s\r", char)
-			ty++
-			if ty == 7 {
-				ty = 0
-			}
+			frame++
+			if frame%100 == 0 {
 
-		}
-	}
+				var char string
 
-	/*
-		minx := maxwidth
-		maxx := 0
-		miny := maxheight
-		maxy := 0
-		for y := 0; y < maxheight; y++ {
-			for x := 0; x < maxwidth; x++ {
-				if grid1[y+maxwidth+x] != 0 {
-					if x > maxx {
-						maxx = x
-					}
-					if x < minx {
-						minx = x
-					}
-					if y > maxy {
-						maxy = y
-					}
-					if y < miny {
-						miny = y
-					}
+				switch ty {
+				case 0:
+					char = "|"
+				case 1:
+					char = "/"
+				case 2:
+					char = "-"
+				case 3:
+					char = "\\"
+				case 4:
+					char = "|"
+				case 5:
+					char = "/"
+				case 6:
+					char = "-"
+				case 7:
+					char = "\\"
+				}
+
+				fmt.Printf("%s\r", char)
+				ty++
+				if ty == 7 {
+					ty = 0
 				}
 			}
 		}
-
-		fmt.Printf("minx %d miny %d\nmaxx %d maxy %d\n", minx, miny, maxx, maxy)
-	*/
+		grid1[cindex] += 128
+	}
 
 	/*
 	   F2F3AE
@@ -266,8 +254,6 @@ func main() {
 	*/
 
 	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)
-	fmt.Println("Frames:", frame)
-	fmt.Println("grains:", grains)
 
 	// make bounding box a little larger
 	wrec.MinX -= 10
@@ -295,7 +281,11 @@ func main() {
 	bgcolor := color.RGBA{R: 0, G: 0, B: 0, A: 0xFF}
 	draw.Draw(img, img.Bounds(), &image.Uniform{bgcolor}, image.Point{}, draw.Src)
 
-	fmt.Printf("w:%d h:%d\n", iwidth, iheight)
+	fmt.Printf("- %d 1<<%d\n", grains, shift)
+	fmt.Printf("  - Time %s\n", time.Since(start))
+	fmt.Println("  - Frames:", frame)
+	fmt.Printf("  - w:%d h:%d\n", iwidth, iheight)
+	fmt.Println()
 
 	x := 0
 	y := 0
@@ -305,16 +295,16 @@ func main() {
 			num := grid1[wy*maxwidth+wx]
 			switch num {
 			case 0:
-				c := color.RGBA{R: 0x3d, G: 0x31, B: 0x5b, A: 0xff}
+				c := color.RGBA{R: 0x47, G: 0x2e, B: 0x74, A: 0xff}
 				img.Set(x, y, c)
 			case 1:
-				c := color.RGBA{R: 0x44, G: 0x4b, B: 0x6e, A: 0xff}
+				c := color.RGBA{R: 0x31, G: 0x3a, B: 0x75, A: 0xff}
 				img.Set(x, y, c)
 			case 2:
-				c := color.RGBA{R: 0x70, G: 0x8b, B: 0x75, A: 0xff}
+				c := color.RGBA{R: 0xaa, G: 0x8a, B: 0x39, A: 0xff}
 				img.Set(x, y, c)
 			case 3:
-				c := color.RGBA{R: 0x9a, G: 0xb8, B: 0x7a, A: 0xff}
+				c := color.RGBA{R: 0xaa, G: 0x9c, B: 0x39, A: 0xff}
 				img.Set(x, y, c)
 			}
 
@@ -324,12 +314,10 @@ func main() {
 		x = 0
 	}
 
-	fmt.Println()
-	fmt.Printf("Time %s\n\n", time.Since(start))
-	fmt.Println()
-
 	pid := os.Getpid()
-	fn := fmt.Sprintf("images/test-%d.png", pid)
+	//
+	fn := fmt.Sprintf("images/%011d-%06d.png", grains, pid)
+	//fn := fmt.Sprintf("images/test-%d.png", pid)
 	f, err := os.Create(fn)
 	if err != nil {
 		log.Fatalln(err)

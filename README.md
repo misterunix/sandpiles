@@ -58,3 +58,52 @@ Starting the run with the number of grains in the starting spot is faster than a
 
 ## Putting 1 grain at a time in a loop
 
+- 4095
+  - Time 50.558171937s
+  - Frames: 9743
+  - w:68 h:68
+- 8191
+  - Time 2m9.911933306s
+  - Frames: 26581
+  - w:86 h:86
+
+** looping is to slow **
+
+## Changing grid depth to uint8 and loop at 128 per loop
+
+- 2048 1<<11
+  - Time 1.042953439s
+  - Frames: 1786
+  - w:54 h:54
+- 4096 1<<12
+  - Time 2.688006804s
+  - Frames: 4757
+  - w:68 h:68
+- 8192 1<<13
+  - Time 8.030793469s
+  - Frames: 13502
+  - w:86 h:86
+- 16384 1<<14
+  - Time 24.584770951s
+  - Frames: 40685
+  - w:114 h:114
+- 32768 1<<15
+  - Time 1m13.624960493s
+  - Frames: 118091
+  - w:154 h:154
+- 65536 1<<16
+  - Time 3m37.552113689s
+  - Frames: 339165
+  - w:208 h:208
+- 131072 1<<17
+  - Time 11m27.005981101s
+  - Frames: 978338
+  - w:286 h:286
+- 262144 1<<18
+  - Time 40m7.255383462s
+  - Frames: 2816895
+  - w:394 h:394
+
+
+
+

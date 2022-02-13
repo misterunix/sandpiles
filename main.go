@@ -166,7 +166,7 @@ func main() {
 	centerheight = maxheight / 2
 
 	// shift : Easy place to set the number of bits to shift.
-	shift := 15
+	shift := 22
 
 	// grains : The number of grains that will be feed to the starting locations.
 	grains := 1 << shift
@@ -182,10 +182,10 @@ func main() {
 	cindex := centerheight*maxwidth + centerwidth
 
 	// prime the grid
-	//grid1[cindex-100] = 128
-	//grid1[cindex+100] = 128
+	grid1[cindex-100] = 128
+	grid1[cindex+100] = 128
 
-	grid1[cindex] = 128
+	//grid1[cindex] = 128
 
 	// Scan grid to find working rectangle
 	for y := 0; y < maxheight; y++ {
@@ -261,12 +261,12 @@ func main() {
 			}
 		}
 
-		// topple exited out of the inner loop. Add 129 to the feed points on
+		// topple exited out of the inner loop. Add 128 to the feed points on
 		// the grid. Allow the outer loop to check if enough grains have been
 		// set.
-		//grid1[cindex-100] += 128
-		//grid1[cindex+100] += 128
-		grid1[cindex] += 128
+		grid1[cindex-100] += 128
+		grid1[cindex+100] += 128
+		//grid1[cindex] += 128
 	}
 
 	fmt.Printf("Min X:Y %d:%d Max X:Y %d:%d\n", wrec.MinX, wrec.MinY, wrec.MaxX, wrec.MaxY)

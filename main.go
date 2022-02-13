@@ -154,7 +154,7 @@ func main() {
 	maxsize = maxheight * maxwidth
 	grid1 = make([]uint8, maxsize)
 
-	shift := 19
+	shift := 18
 
 	grains := 1 << shift
 
@@ -168,7 +168,8 @@ func main() {
 	cindex := centerheight*maxwidth + centerwidth
 
 	// prime the grid
-	grid1[cindex] = 128
+	grid1[cindex-100] = 128
+	grid1[cindex+100] = 128
 
 	//grains := 1<<15 - 1
 	//grid1[cindex] = grains
@@ -242,7 +243,8 @@ func main() {
 				}
 			}
 		}
-		grid1[cindex] += 128
+		grid1[cindex-100] += 128
+		grid1[cindex+100] += 128
 	}
 
 	/*
@@ -305,6 +307,9 @@ func main() {
 				img.Set(x, y, c)
 			case 3:
 				c := color.RGBA{R: 0xaa, G: 0x9c, B: 0x39, A: 0xff}
+				img.Set(x, y, c)
+			case 4:
+				c := color.RGBA{R: 0x00, G: 0xff, B: 0x00, A: 0xff}
 				img.Set(x, y, c)
 			}
 

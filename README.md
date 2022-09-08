@@ -48,3 +48,23 @@ x,y: 6275 6275 5725 5725
 550 550
 ```
 
+```
+./sandpiles 20
+shift 20
+grains 1048576
+grid_X 12000
+grid_Y 12000
+grid_size 144000000
+ip1x 6000
+ip1y 6000
+pos1 72006000
+granis 0
+ratio 0
+pilehalf 2147483648
+2^ 20 grains placed
+Time:  650.106960383
+x,y: 6383 6383 5617 5617
+5617 6383
+5617 6383
+766 766
+```

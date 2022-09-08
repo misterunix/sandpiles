@@ -25,7 +25,7 @@ var grid_X int
 var grid_Y int
 var grid_size int
 
-//var shift int
+var shiftb int
 
 // gsize *grid1;
 var grid1 []uint32
@@ -95,7 +95,8 @@ func PrintPNG() {
 	}
 	//fmt.Println()
 
-	f, err := os.Create("images/outimage.png")
+	fn := fmt.Sprintf("images/out%v-%d.png", time.Now().Local().Format("20060102150405"), shiftb)
+	f, err := os.Create(fn)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -176,7 +177,7 @@ func main() {
 
 	shift, _ := strconv.Atoi(os.Args[1])
 	//shift = atoi(argv[1]); // shift : The shift amount to calculate the grains.
-
+	shiftb = shift
 	grains = 1 << shift // grains : Total number of grains to place on the grid.
 
 	grid_X = 12000              // grid_X : Maximum size of the grid/image in the X

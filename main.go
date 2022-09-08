@@ -1,54 +1,232 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"image"
+	"image/color"
+	"image/png"
+	"log"
+	"os"
+	"strconv"
+	"time"
 )
 
-var bMinX int      //The bounding box in lower the X plane.
-var bMinY int      //The bounding box in lower the Y plane.
-var bMaxX int      //The bounding box in upper the X plane.
-var bMaxY int      //The bounding box in upper the Y plane.
-var grid_x int     //The grid size in the X plane.
-var grid_y int     //The grid size in the Y plane.
-var grid_size int  // The total number of cells in the grid.
-var shift int      // number of bits to shift for grain count.
-var grid1 []uint32 // The working grid.
-// var shift uint32 // The number of bits to shift for grain count.
-var pilehalf uint64 = 2147483648
+//#define gsize uint32_t // fall back is uint16_t
+//#define pilehalf 2147483648 // fall back is 32768
+
+// globals
+
+var bMinX int // bMinX : The bounding box in lower the X plane.
+var bMinY int // bMinY : The bounding box in lower the Y plane.
+var bMaxX int // bMaxX : The bounding box in the upper X plane.
+var bMaxY int // bMaxY : The bounding box in the upper Y plane.
+
+var grid_X int
+var grid_Y int
+var grid_size int
+
+//var shift int
+
+// gsize *grid1;
+var grid1 []uint32
+
+func PrintPNG() {
+
+	bMinX -= 10
+	bMinY -= 10
+	bMaxX += 10
+	bMaxY += 10
+
+	width := bMaxX - bMinX
+	height := bMaxY - bMinY
+
+	//var img1 = image.NewRGB(image.Rect(0, 0, width, height))
+	upLeft := image.Point{0, 0}
+	lowRight := image.Point{width, height}
+
+	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
+
+	fmt.Println("x,y:", bMaxX, bMaxY, bMinX, bMinY)
+
+	for y := bMinY; y < bMaxY; y++ {
+		for x := bMinX; x < bMaxX; x++ {
+			xx := x - bMinX
+			yy := y - bMinY
+			img.Set(xx, yy, color.White)
+		}
+	}
+
+	fmt.Println(bMinX, bMaxX)
+	fmt.Println(bMinY, bMaxY)
+	fmt.Println(width, height)
+
+	for y := bMinY; y < bMaxY; y++ {
+		for x := bMinX; x < bMaxX; x++ {
+			xx := x - bMinX
+			yy := y - bMinY
+
+			index := y*grid_X + x
+			num := grid1[index]
+			//cyan := color.RGBA{100, 200, 200, 0xff}
+
+			//fmt.Print(num)
+
+			switch {
+			case num == 0:
+				//c := color.Color(color.RGBA{0x4, 0x3a, 0x6f, 255})
+				//c := color.RGBA{0x4, 0x3a, 0x6f, 0}
+				img.Set(xx, yy, color.RGBA{0x4, 0x3a, 0x6f, 255})
+				//img.Set(xx, yy, color.RGBA{0, 0, 0, 255})
+			case num == 1:
+				//img.Set(xx, yy, cyan)
+				img.Set(xx, yy, color.RGBA{0xf, 0x72, 0x84, 255})
+			case num == 2:
+				//img.Set(xx, yy, cyan)
+				img.Set(xx, yy, color.RGBA{0xaa, 0x88, 0x39, 255})
+			case num == 3:
+				//img.Set(xx, yy, cyan)
+				img.Set(xx, yy, color.RGBA{0x9c, 0x00, 0x3c, 255})
+			default:
+				img.Set(xx, yy, color.Black)
+			}
+
+		}
+		//fmt.Println()
+	}
+	//fmt.Println()
+
+	f, err := os.Create("images/outimage.png")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
+
+	err = png.Encode(f, img)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+}
+
+func topple() {
+
+	bail := false
+
+	for !bail {
+		wMinX := bMinX
+		wMaxX := bMaxX
+		wMinY := bMinY
+		wMaxY := bMaxY
+
+		bail = true
+
+		for y := wMinY; y <= wMaxY; y++ {
+			for x := wMinX; x <= wMaxX; x++ {
+				index := y*grid_X + x
+
+				if grid1[index] >= 4 {
+					bail = false
+
+					grid1[index] -= 4
+
+					tyn := y - 1
+					if tyn >= 0 {
+						t_index := tyn*grid_X + x
+						grid1[t_index]++
+						if tyn < bMinY {
+							bMinY = tyn
+						}
+					}
+					tys := y + 1
+					if tys <= grid_Y-1 {
+						t_index := tys*grid_X + x
+						grid1[t_index]++
+						if tys > bMaxY {
+							bMaxY = tys
+						}
+					}
+
+					txw := x - 1
+					if txw >= 0 {
+						t_index := y*grid_X + txw
+						grid1[t_index]++
+						if txw < bMinX {
+							bMinX = txw
+						}
+					}
+					txe := x + 1
+					if txe <= grid_X-1 {
+						t_index := y*grid_X + txe
+						grid1[t_index]++
+						if txe > bMaxX {
+							bMaxX = txe
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 func main() {
 
-	flag.IntVar(&shift, "s", 8, "Number of bits to shift for grain count.")
-	flag.Parse()
+	var grains uint32
+	//uint64_t grains;
+	//start := time.Now()
 
-	var grains uint64
+	shift, _ := strconv.Atoi(os.Args[1])
+	//shift = atoi(argv[1]); // shift : The shift amount to calculate the grains.
 
-	grid_x = 1920
-	grid_y = 1080
-	grid_size = grid_x * grid_y
+	grains = 1 << shift // grains : Total number of grains to place on the grid.
 
-	// Initialize the working grid.
-	grid1 = make([]uint32, grid_size) // Allocate the working grid.
+	grid_X = 12000              // grid_X : Maximum size of the grid/image in the X
+	grid_Y = 12000              // grid_Y : Maximum size of the grid/image in the Y
+	grid_size = grid_X * grid_Y // grid_size : total number of units for the grid array.
 
-	bMinX = grid_x // Make the min high enough so the true lower bound can be found.
-	bMinY = grid_y // Make the min high enough so the true lower bound can be found.
-	bMaxX = 0      // Make the max low enough so the true upper bound can be found.
-	bMaxY = 0      // Make the max low enough so the true upper bound can be found.
+	fmt.Println("shift", shift)
+	fmt.Println("grains", grains)
+	fmt.Println("grid_X", grid_X)
+	fmt.Println("grid_Y", grid_Y)
+	fmt.Println("grid_size", grid_size)
 
-	ip1x := grid_x / 2
-	ip1y := grid_y / 2
-	pos1 := ip1y*grid_x + ip1x
+	// grid1 : Array where the grains are stored. Changed to gsize for speed
+	// reasons - and memory.
+	grid1 = make([]uint32, grid_size) //  new gsize[grid_size];
 
-	if grains < pilehalf {
-		grid1[pos1] = uint32(grains)
+	// Init the grid array to all 0s
+	// shouldnt need to be done in go
+	/*
+	  for int i = 0; i < grid_size; i++
+	  {
+	    grid1[i] = 0;
+	  }
+	*/
+
+	//std::cout << "Grid Initialized" << std::endl;
+
+	bMinX = grid_X // Make the min high enough so the true lower bound can be found.
+	bMaxX = 0      // Make the max low enough so that true upper bound can be found.
+	bMinY = grid_Y // make the min high enough so the true lower bound can be found.
+	bMaxY = 0      // bMaxY : The bounding box in the upper Y plane.
+
+	ip1x := grid_X / 2
+	ip1y := grid_Y / 2
+	pos1 := ip1y*grid_X + ip1x
+
+	fmt.Println("ip1x", ip1x)
+	fmt.Println("ip1y", ip1y)
+	fmt.Println("pos1", pos1)
+
+	if grains < 2147483648 {
+		grid1[pos1] = grains
 	} else {
-		grid1[pos1] = uint32(pilehalf)
+		grid1[pos1] = 2147483648
 	}
 
-	for y := 0; y < grid_y; y++ {
-		for x := 0; x < grid_x; x++ {
-			index := y*grid_x + x
+	// find area of grid with starting grains
+	for y := 0; y < grid_Y; y++ {
+		for x := 0; x < grid_X; x++ {
+			index := y*grid_X + x
 
 			if grid1[index] != 0 {
 				if x < bMinX {
@@ -72,84 +250,51 @@ func main() {
 	bMinX--
 	bMinY--
 
-	grains_put := pilehalf
-	if grains < pilehalf {
+	start := time.Now()
+
+	var grains_put uint32
+	grains_put = 2147483648
+	if grains < 2147483648 {
 		grains_put = grains
 	}
 
 	for {
 		grains -= grains_put
 		topple()
-		ratio := float64(grains) / float64(pilehalf)
-		fmt.Println("grains: ", grains, " pilehalf: ", pilehalf, " ratio: ", ratio)
-		if grains > 0 && grains >= pilehalf {
-			grains_put = pilehalf
-			grid1[pos1] += uint32(grains_put)
-		} else if grains > 0 && grains < pilehalf {
+		ratio := float64(grains) / 2147483648.0
+
+		fmt.Println("granis", grains)
+		fmt.Println("ratio", ratio)
+		fmt.Println("pilehalf", 2147483648)
+		//std::cerr << "grains: " << grains << " pilehalf: " << pilehalf << " ratio: " << ratio << std::endl;
+
+		if grains > 0 && grains >= 2147483648 {
+			grains_put = 2147483648
+			grid1[pos1] += grains_put
+		} else if grains > 0 && grains < 2147483648 {
 			grains_put = grains
-			grid1[pos1] += uint32(grains_put)
+			grid1[pos1] += grains_put
 		} else {
 			break
 		}
 	}
 
-}
+	//st := 1 << shift
+	fmt.Println("2^", shift, "grains placed")
+	//std::cerr << "2^" << shift << std::endl          << "- " << st << " grains placed" << std::endl;
+	timetook := time.Since(start)
 
-func topple() {
+	fmt.Println("Time: ", timetook.Seconds())
 
-	var bail bool
-	bail = false
-	for !bail {
-		wMinX := bMinX
-		wMaxX := bMaxX
-		wMinY := bMinY
-		wMaxY := bMaxY
+	PrintPNG()
 
-		bail = true
+	// not need in go
+	/*
+	  if (grid1 != NULL)
+	  {
+	    delete[] grid1;
+	  }
 
-		for y := wMinY; y <= wMaxY; y++ {
-			for x := wMinX; x <= wMaxX; x++ {
-				index := y*grid_x + x
-				if grid1[index] >= 4 {
-					bail = false
-
-					grid1[index] -= 4
-
-					tyn := y - 1
-					if tyn >= 0 {
-						t_index := tyn*grid_x + x
-						grid1[t_index]++
-						if tyn < bMinY {
-							bMinY = tyn
-						}
-					}
-					tys := y + 1
-					if tys <= grid_y-1 {
-						t_index := tys*grid_x + x
-						grid1[t_index]++
-						if tys > bMaxY {
-							bMaxY = tys
-						}
-					}
-
-					txw := x - 1
-					if txw >= 0 {
-						t_index := y*grid_x + txw
-						grid1[t_index]++
-						if txw < bMinX {
-							bMinX = txw
-						}
-					}
-					txe := x + 1
-					if txe <= grid_x-1 {
-						t_index := y*grid_x + txe
-						grid1[t_index]++
-						if txe > bMaxX {
-							bMaxX = txe
-						}
-					}
-				}
-			}
-		}
-	}
+	  return (0);
+	*/
 }

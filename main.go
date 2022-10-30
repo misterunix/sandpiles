@@ -75,17 +75,17 @@ func PrintPNG() {
 			case num == 0:
 				//c := color.Color(color.RGBA{0x4, 0x3a, 0x6f, 255})
 				//c := color.RGBA{0x4, 0x3a, 0x6f, 0}
-				img.Set(xx, yy, color.RGBA{0x4, 0x3a, 0x6f, 255})
+				img.Set(xx, yy, color.RGBA{18, 72, 249, 255})
 				//img.Set(xx, yy, color.RGBA{0, 0, 0, 255})
 			case num == 1:
 				//img.Set(xx, yy, cyan)
-				img.Set(xx, yy, color.RGBA{0xf, 0x72, 0x84, 255})
+				img.Set(xx, yy, color.RGBA{115, 170, 249, 255})
 			case num == 2:
 				//img.Set(xx, yy, cyan)
-				img.Set(xx, yy, color.RGBA{0xaa, 0x88, 0x39, 255})
+				img.Set(xx, yy, color.RGBA{255, 192, 0, 255})
 			case num == 3:
 				//img.Set(xx, yy, cyan)
-				img.Set(xx, yy, color.RGBA{0x9c, 0x00, 0x3c, 255})
+				img.Set(xx, yy, color.RGBA{124, 0, 0, 255})
 			default:
 				img.Set(xx, yy, color.Black)
 			}

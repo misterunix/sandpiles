@@ -169,8 +169,8 @@ func main() {
 	shiftb = shift
 	grains = 1 << shift // grains : Total number of grains to place on the grid.
 
-	grid_X = 12000              // grid_X : Maximum size of the grid/image in the X
-	grid_Y = 12000              // grid_Y : Maximum size of the grid/image in the Y
+	grid_X = 10000              // grid_X : Maximum size of the grid/image in the X
+	grid_Y = 10000              // grid_Y : Maximum size of the grid/image in the Y
 	grid_size = grid_X * grid_Y // grid_size : total number of units for the grid array.
 
 	fmt.Println("shift", shift)
@@ -195,9 +195,11 @@ func main() {
 	ip1y := grid_Y / 2
 	pos1 := ip1y*grid_X + ip1x
 
-	fmt.Println("ip1x", ip1x)
-	fmt.Println("ip1y", ip1y)
-	fmt.Println("pos1", pos1)
+	// Changing to have 4 locations for the grains to start.
+
+	fmt.Print("ip1x: ", ip1x)
+	fmt.Print(" ip1y: ", ip1y)
+	fmt.Println(" pos1:", pos1)
 
 	if grains < 2147483648 {
 		grid1[pos1] = grains

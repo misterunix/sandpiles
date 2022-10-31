@@ -6,10 +6,11 @@ Inspired by
 
 New code based on my 'c' version. Way faster. 
 
-Maximum grid size is 12000 x 12000. This is much to large, but I have yet to find a way to overestimate out large a sandpile is going to be. The code is optimized to only work in the region of the active sandpile. Right now, its just a waste of memory.
+Maximum grid size is 12000 x 12000. This is much to large, but I have yet to find a way to overestimate how large a sandpile is going to be. The code is optimized to only work in the region of the active sandpile. Right now, its just a waste of memory.
 
 The center of the grid starts with the listed starting grains. The maximum grains that can be placed is 2147483648 or half of uint32.
 
+Times are relative to the hardware they are running on. I have several i3,i5,i7 and amd laptops that the code has run on at one time or another. Just for fun I let it run for a month on a raspberry pi 2b and it was **SLOW**! But what do you expect from such a limited system.
 
 2^8 grains placed
 grains 256

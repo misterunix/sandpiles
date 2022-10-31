@@ -95,7 +95,7 @@ func PrintPNG() {
 	}
 	//fmt.Println()
 
-	fn := fmt.Sprintf("images/out%v-%d.png", time.Now().Local().Format("20060102150405"), shiftb)
+	fn := fmt.Sprintf("images/%v-%d.png", time.Now().Local().Format("20060102150405"), shiftb)
 	f, err := os.Create(fn)
 	if err != nil {
 		log.Fatalln(err)

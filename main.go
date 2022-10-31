@@ -27,7 +27,6 @@ var grid_size int
 
 var shiftb int
 
-// gsize *grid1;
 var grid1 []uint32
 
 func PrintPNG() {
@@ -40,7 +39,6 @@ func PrintPNG() {
 	width := bMaxX - bMinX
 	height := bMaxY - bMinY
 
-	//var img1 = image.NewRGB(image.Rect(0, 0, width, height))
 	upLeft := image.Point{0, 0}
 	lowRight := image.Point{width, height}
 
@@ -67,33 +65,26 @@ func PrintPNG() {
 
 			index := y*grid_X + x
 			num := grid1[index]
-			//cyan := color.RGBA{100, 200, 200, 0xff}
-
-			//fmt.Print(num)
 
 			switch {
 			case num == 0:
-				//c := color.Color(color.RGBA{0x4, 0x3a, 0x6f, 255})
-				//c := color.RGBA{0x4, 0x3a, 0x6f, 0}
 				img.Set(xx, yy, color.RGBA{18, 72, 249, 255})
-				//img.Set(xx, yy, color.RGBA{0, 0, 0, 255})
 			case num == 1:
-				//img.Set(xx, yy, cyan)
+
 				img.Set(xx, yy, color.RGBA{115, 170, 249, 255})
 			case num == 2:
-				//img.Set(xx, yy, cyan)
+
 				img.Set(xx, yy, color.RGBA{255, 192, 0, 255})
 			case num == 3:
-				//img.Set(xx, yy, cyan)
+
 				img.Set(xx, yy, color.RGBA{124, 0, 0, 255})
 			default:
 				img.Set(xx, yy, color.Black)
 			}
 
 		}
-		//fmt.Println()
+
 	}
-	//fmt.Println()
 
 	fn := fmt.Sprintf("images/%v-%d.png", time.Now().Local().Format("20060102150405"), shiftb)
 	f, err := os.Create(fn)
@@ -172,11 +163,9 @@ func topple() {
 func main() {
 
 	var grains uint32
-	//uint64_t grains;
-	//start := time.Now()
 
 	shift, _ := strconv.Atoi(os.Args[1])
-	//shift = atoi(argv[1]); // shift : The shift amount to calculate the grains.
+
 	shiftb = shift
 	grains = 1 << shift // grains : Total number of grains to place on the grid.
 
@@ -196,14 +185,6 @@ func main() {
 
 	// Init the grid array to all 0s
 	// shouldnt need to be done in go
-	/*
-	  for int i = 0; i < grid_size; i++
-	  {
-	    grid1[i] = 0;
-	  }
-	*/
-
-	//std::cout << "Grid Initialized" << std::endl;
 
 	bMinX = grid_X // Make the min high enough so the true lower bound can be found.
 	bMaxX = 0      // Make the max low enough so that true upper bound can be found.
@@ -267,7 +248,6 @@ func main() {
 		fmt.Println("granis", grains)
 		fmt.Println("ratio", ratio)
 		fmt.Println("pilehalf", 2147483648)
-		//std::cerr << "grains: " << grains << " pilehalf: " << pilehalf << " ratio: " << ratio << std::endl;
 
 		if grains > 0 && grains >= 2147483648 {
 			grains_put = 2147483648
@@ -280,22 +260,12 @@ func main() {
 		}
 	}
 
-	//st := 1 << shift
 	fmt.Println("2^", shift, "grains placed")
-	//std::cerr << "2^" << shift << std::endl          << "- " << st << " grains placed" << std::endl;
+
 	timetook := time.Since(start)
 
 	fmt.Println("Time: ", timetook.Seconds())
 
 	PrintPNG()
 
-	// not need in go
-	/*
-	  if (grid1 != NULL)
-	  {
-	    delete[] grid1;
-	  }
-
-	  return (0);
-	*/
 }

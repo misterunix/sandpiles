@@ -1,13 +1,14 @@
 package main
 
 import (
+	"errors"
+	"flag"
 	"fmt"
 	"image"
 	"image/color"
 	"image/png"
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -162,9 +163,26 @@ func topple() {
 
 func main() {
 
+	var shift int
+	var imgpath string
+
+	//flags.ParseIntVar(&shift, "shift", 0, "number of bits to shift")
+	flag.IntVar(&shift, "shift", 8, "number of bits to shift")
+	flag.StringVar(&imgpath, "imgpath", "images", "relative path from execution point to save images at")
+	flag.Parse()
+
+	// create the images directory if it doesn't exist
+	if _, err := os.Stat(imgpath); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(imgpath, os.ModePerm)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
+
 	var grains uint32
 
-	shift, _ := strconv.Atoi(os.Args[1])
+	//shift, _ := strconv.Atoi(os.Args[1])
 
 	shiftb = shift
 	grains = 1 << shift // grains : Total number of grains to place on the grid.
@@ -175,6 +193,7 @@ func main() {
 
 	fmt.Println("shift", shift)
 	fmt.Println("grains", grains)
+	fmt.Println("Path to save images", imgpath)
 	fmt.Println("grid_X", grid_X)
 	fmt.Println("grid_Y", grid_Y)
 	fmt.Println("grid_size", grid_size)

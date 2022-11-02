@@ -14,8 +14,9 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 #*.png 
+*.ods 
+*.txt
 
-sandpiles
-l.txt
+!binaries/*
 
-!0*.png
+

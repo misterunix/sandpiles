@@ -1,14 +1,14 @@
 # New Server
 
-I found some old hardware that has been reconfigured to be a ubuntu server.
+I found some old hardware that has been reconfigured to be an Ubuntu server.
 
-It is slower than the i5 and i7 that I have been using but it will be a good platform for all the other things I do.
+It is slower than the i5 and i7 that I have been using but, it will be a good platform for all the other things I do.
 
 Intel(R) Core(TM) i3-2120 CPU @ 3.30GHz with 4 cores.
 
-Since this can be a dedicated server where no development takes place it can be left up longer. Time will tell if its worth it.
+Since this can be a dedicated server where no development takes place it can be left up longer. Time will tell if it's worth it.
 
-Its easy tell it is slower by compairing the previous times (from the readme).
+It's easy to tell it is slower by comparing the previous times (from the readme).
 
 |grains|time seconds|
 |:-|-:|

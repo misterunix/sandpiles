@@ -1,16 +1,20 @@
 # sandpiles
 
+Abelian sandpile models
+
 Inspired by
 [Fractal Zero](https://www.youtube.com/watch?v=1MtEUErz7Gg)
 
 
 New code based on my 'c' version. Way faster. 
 
-Maximum grid size is 12000 x 12000. This is much to large, but I have yet to find a way to overestimate how large a sandpile is going to be. The code is optimized to only work in the region of the active sandpile. Right now, its just a waste of memory.
+The maximum grid size is 10000 x 10000. This is much too large, but I have yet to find a way to overestimate how large a sandpile is going to be. The code automatically scales down and up the number of cells it has to process each round so the maximum grid size isn't iterated over each time. The code is optimized to only work in the region of the active sandpile. Right now, it is just a waste of memory.
 
-The center of the grid starts with the listed starting grains. The maximum grains that can be placed is 2147483648 or half of uint32.
+The center of the grid starts with the listed starting grains. The maximum number of grains that can be placed is 2147483648 or half of uint32.
 
-Times are relative to the hardware they are running on. I have several i3,i5,i7 and amd laptops that the code has run on at one time or another. Just for fun I let it run for a month on a raspberry pi 2b and it was **SLOW**! But what do you expect from such a limited system.
+Times are relative to the hardware they are running on. I have several i3,i5,i7, and AMD laptops that the code has run on at one time or another. Just for fun, I let it run for a month on a raspberry pi 2b and it was **SLOW**! But what do you expect from such a limited system?
+
+If you have hardware/time to spare consider running one of the larger sandpiles that have not been completed yet.
 
 2^8 grains placed  
 grains 256  

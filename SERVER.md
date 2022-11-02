@@ -10,12 +10,11 @@ Since this can be a dedicated server where no development takes place it can be 
 
 It's easy to tell it is slower by comparing the previous times (from the readme).
 
-|grains|time seconds|
+|grains|seconds|
 |:-|-:|
-|2^ 9|0.0002|
 |2^ 10|0.001|
-|2^ 12|0.009|
 |2^ 11|0.002|
+|2^ 12|0.009|
 |2^ 13|0.038|
 |2^ 14|0.158|
 |2^ 15|0.620|
@@ -25,5 +24,6 @@ It's easy to tell it is slower by comparing the previous times (from the readme)
 |2^ 19|167.706|
 |2^ 20|774.179|
 |2^ 21|3172.576|
-
+|2^ 22|12692.533|
+|2^ 23|50996.374|
 

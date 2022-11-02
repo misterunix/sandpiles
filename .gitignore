@@ -17,6 +17,6 @@
 *.ods 
 *.txt
 
-!binaries/*
+binaries/*
 
 

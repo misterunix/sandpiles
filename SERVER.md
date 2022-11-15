@@ -27,4 +27,6 @@ It's easy to tell it is slower by comparing the previous times (from the readme)
 |2^ 22|12692.533|
 |2^ 23|50996.374|
 |2^ 24|204492.158|
+|2^ 25|824001.633|
+
 

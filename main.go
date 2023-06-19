@@ -69,16 +69,13 @@ func PrintPNG() {
 
 			switch {
 			case num == 0:
-				img.Set(xx, yy, color.RGBA{18, 72, 249, 255})
+				img.Set(xx, yy, color.RGBA{0x11, 0x7e, 0x9e, 255})
 			case num == 1:
-
-				img.Set(xx, yy, color.RGBA{115, 170, 249, 255})
+				img.Set(xx, yy, color.RGBA{0x0e, 0xb8, 0xeb, 255})
 			case num == 2:
-
-				img.Set(xx, yy, color.RGBA{255, 192, 0, 255})
+				img.Set(xx, yy, color.RGBA{0xeb, 0x26, 0x5f, 255})
 			case num == 3:
-
-				img.Set(xx, yy, color.RGBA{124, 0, 0, 255})
+				img.Set(xx, yy, color.RGBA{0xeb, 0xde, 0x3d, 255})
 			default:
 				img.Set(xx, yy, color.Black)
 			}

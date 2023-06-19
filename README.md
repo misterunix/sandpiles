@@ -104,6 +104,15 @@ grains 16777216
 Time:  196337.852703953  
 2988 2988  
 
+25
+grains 33554432
+Time:  824001 (9.53 days)
+4212 4212
+
+26
+grains 67108864
+Time: 3319832 (38.42 days)
+5944 5944
 
 Interesting but useless
 
@@ -118,36 +127,3 @@ Interesting but useless
 |23|48145|802.4|13.374|0.5572|
 |24|196337|3272.3|54.538|2.2724|
 
-shift 25
-grains 33554432
-grid_X 10000
-grid_Y 10000
-grid_size 100000000
-ip1x: 5000 ip1y: 5000 pos1: 50005000
-granis 0
-ratio 0
-pilehalf 2147483648
-2^ 25 grains placed
-Time:  824001.633838178
-x,y: 7106 7106 2894 2894
-2894 7106
-2894 7106
-4212 4212
-
-
-
-shift 26
-grains 67108864
-grid_X 10000
-grid_Y 10000
-grid_size 100000000
-ip1x: 5000 ip1y: 5000 pos1: 50005000
-granis 0
-ratio 0
-pilehalf 2147483648
-2^ 26 grains placed
-Time:  3.319831941370096e+06
-x,y: 7972 7972 2028 2028
-2028 7972
-2028 7972
-5944 5944
